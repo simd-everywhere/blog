@@ -1,0 +1,91 @@
+---
+layout: post
+title:  "SIMDe 0.5.0 Released"
+date:   2020-06-21 00:00:00 -0700
+categories: announcements release
+author: Evan Nemerson
+---
+
+I’m pleased to announce the availability of [SIMD Everywhere](https://github.com/simd-everywhere) (SIMDe)
+version 0.5.0, representing more than three years of work by over a
+dozen developers.
+
+SIMDe is a permissively-licensed (MIT) header-only library which
+provides fast, portable implementations of
+[SIMD](https://en.wikipedia.org/wiki/SIMD) intrinsics for platforms
+which aren’t natively supported by the API in question.
+
+For example, with SIMDe you can use
+[SSE](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions) on
+[ARM](https://en.wikipedia.org/wiki/ARM_architecture),
+[POWER](https://en.wikipedia.org/wiki/IBM_POWER_instruction_set_architecture),
+[WebAssembly](https://webassembly.org/), or almost any platform with a
+C compiler.  That includes, of course, x86 CPUs which don't support
+the ISA extension is question (*e.g.*, calling AVX-512F functions on a
+CPU which doesn't natively support them).
+
+If the target natively supports the SIMD extension in question there
+is no performance penalty for using SIMDe.  Otherwise, accelerated
+implementations, such as NEON on ARM, AltiVec on POWER, WASM SIMD on
+WebAssembly, etc., are used when available to provide good
+performance.
+
+SIMDe has already been used to port several packages to additional
+architectures through either upstream support or distribution
+packages, [particularly on
+Debian](https://wiki.debian.org/SIMDEverywhere).
+
+If you'd like to play with SIMDe online, you can do so [on Compiler
+Explorer](https://simde.netlify.app/godbolt/demo).
+
+## What is in 0.5.0
+
+The 0.5.0 release is SIMDe’s first release.  It includes complete
+implementations of:
+
+ * MMX
+ * SSE
+ * SSE2
+ * SSE3
+ * SSSE3
+ * SSE4.1
+ * AVX
+ * FMA
+ * GFNI
+
+We also have rapidly progressing implementations of many other
+extensions including NEON, AVX2, SVML, and several AVX-512 extensions
+(AVX-512F, AVX-512BW, AVX-512VL, etc.).
+
+Additionally, we have an extensive test suite to verify our
+implementations.
+
+## What is coming next
+
+Work on SIMDe is proceeding rapidly, but there are a lot of functions
+to implement… x86 alone has about 6,000 SIMD functions, and we’ve
+implemented about 2,000 of them.  We will keep adding more functions
+and improving the implementations we already have.
+
+Our NEON implementation is being worked on very actively right now
+by Sean Maher and Christopher Moore, and is expected to continue
+progressing rapidly.
+
+We currently have two Google Summer of Code students working on the
+project as well; [Hidayat
+Khan](https://masterchef2209.wordpress.com/2020/06/17/guide-to-intel-sse4-2-crc-intrinisics-implementation-for-simde/)
+is working on finishing up AVX2, and [Himanshi
+Mathur](https://medium.com/@himanshi18037) is focused on SVML.
+
+If you're interested in using SIMDe but need some specific functions
+to be implemented first, please [file an
+issue](https://github.com/simd-everywhere/simde/issues/new) and we may
+be able to prioritize those functions.
+
+## Getting Involved
+
+If you're interested in helping out please get in touch.  We have [a
+chat room on Gitter](https://gitter.im/simd-everywhere/community)
+which is fairly active if you have questions, or of course you can
+just dive right in on [the issue
+tracker](https://github.com/simd-everywhere/simde/issues).
