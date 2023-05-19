@@ -1,0 +1,172 @@
+---
+layout: post
+title: "SIMDe 0.7.6 Released"
+date: 2023-05-19 00:00:00 -0700
+tags: announcements release
+author: Michael R. Crusoe
+---
+
+I’m pleased to announce the availability of the latest release of [SIMD
+Everywhere](https://github.com/simd-everywhere/simde) (SIMDe),
+[version 0.7.6](https://github.com/simd-everywhere/simde/releases),
+representing more than two years of work by over 30 developers since
+version 0.7.2. (I also released 0.7.4 two weeks ago, but it needed a few more
+fixes; thanks go to the early adopters who helped me out.)
+
+SIMDe is a permissively-licensed (MIT) header-only library which
+provides fast, portable implementations of
+[SIMD](https://en.wikipedia.org/wiki/SIMD) intrinsics for platforms
+which aren’t natively supported by the API in question.
+
+For example, with SIMDe you can use
+[SSE](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions), SSE2, SSE3,
+SSE4.1 and 4.2, AVX, AVX2, and many AVX-512 intrinsics on
+[ARM](https://en.wikipedia.org/wiki/ARM_architecture),
+[POWER](https://en.wikipedia.org/wiki/IBM_POWER_instruction_set_architecture),
+[WebAssembly](https://webassembly.org/), or almost any platform with a
+C compiler.  That includes, of course, x86 CPUs which don't support
+the ISA extension in question (*e.g.*, calling AVX-512F functions on a
+CPU which doesn't natively support them).
+
+If the target natively supports the SIMD extension in question there
+is no performance penalty for using SIMDe.  Otherwise, accelerated
+implementations, such as NEON on ARM, AltiVec on POWER, WASM SIMD on
+WebAssembly, etc., are used when available to provide good
+performance.
+
+SIMDe has already been used to port several packages to additional
+architectures through either upstream support or distribution
+packages, [particularly on
+Debian](https://wiki.debian.org/SIMDEverywhere).
+
+## What's new in 0.7.4 / 0.7.6
+
+- 40 new ARM NEON families implemented
+- Initial support for ARM [SVE API](https://developer.arm.com/Architectures/Scalable%20Vector%20Extensions) implementation ([14 families](https://github.com/simd-everywhere/simde/issues/609))
+- Complete support for x86 [F16C](https://en.wikipedia.org/wiki/F16C) API
+- [Initial support](https://github.com/simd-everywhere/implementation-status/blob/main/msa.md) for MIPS MSA API
+- Nearly complete support for [WASM SIMD128](https://github.com/WebAssembly/simd/blob/main/proposals/simd/SIMD.md) [C/C++ API](https://github.com/llvm/llvm-project/blob/main/clang/lib/Headers/wasm_simd128.h)
+- Initial support for the E2K (Elbrus) architecture
+- Initial support for LoongArch LASX/LSX and optimized implementations of some SSE intrinsics
+- MSVC has many fixes, now compiled in CI using `/ARCH:AVX`, `/ARCH:AVX2`, and `/ARCH:AVX512`
+- Minimum meson version is now 0.54
+
+As always, we have an extensive test suite to verify our
+implementations.
+
+For a complete list of changes, check out the [0.7.4](https://github.com/simd-everywhere/simde/releases/tag/v0.7.4)
+and [0.7.6](https://github.com/simd-everywhere/simde/releases/tag/v0.7.6) release notes.
+
+Below are some additional highlights:
+
+### [X86](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md)
+There are a total of 7470 SIMD functions on x86, 2971 (39.77%) of which have been implemented in SIMDe so far.
+Specifically for AVX-512, of the 5270 functions currently in AVX-512, SIMDe implements 1439 (27.31%)
+
+#### Completely supported functions families
+
+  * [MMX](https://en.wikipedia.org/wiki/MMX_(instruction_set))
+  * [SSE](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions)
+  * [SSE2](https://en.wikipedia.org/wiki/SSE2)
+  * [SSE3](https://en.wikipedia.org/wiki/SSE3)
+  * [SSSE3](https://en.wikipedia.org/wiki/SSSE3)
+  * [SSE4.1](https://en.wikipedia.org/wiki/SSE4#SSE4.1)
+  * [AVX](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions)
+  * [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2)
+  * [F16C](https://en.wikipedia.org/wiki/F16C)
+  * [FMA](https://en.wikipedia.org/wiki/FMA_instruction_set)
+  * [GFNI](https://en.wikipedia.org/wiki/AVX-512#GFNI)
+  * [CLMUL](https://en.wikipedia.org/wiki/CLMUL_instruction_set)
+  * [XOP](https://en.wikipedia.org/wiki/XOP_instruction_set)
+  * [SVML](https://software.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-reference/intrinsics/intrinsics-for-intel-advanced-vector-extensions-512-intel-avx-512-instructions/intrinsics-for-arithmetic-operations-1/intrinsics-for-short-vector-math-library-svml-operations.html)
+
+#### Newly added function families
+- [AVX512CD](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512cd): 21 of 42 (50.00%)
+- [AVX512VPOPCNTDQ](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512vpopcntdq): 18 of 18 💯%!
+- [AVX512_4VNNIW](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512_4vnniw): 6 of 6 💯%!
+- [AVX512_BF16](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512_bf16): 9 of 38 (23.68%)
+- [AVX512_BITALG](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512_bitalg): 24 of 24 💯%!
+- [AVX512_FP16](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512_fp16): 2 of 1105 (0.18%)
+- [AVX512_VBMI2](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512_vbmi2) 3 of 150 (2.00%)
+- [AVX512_VNNI](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512_vnni): 36 of 36 💯%!
+- [AVX_VNNI](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx_vnni): 8 of 16 (50.00%)
+
+#### Additions to existing families
+- [AVX512F](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512f): 579 additional, 856 total of 2660 (31.80%)
+- [AVX512BW](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512bw): 178 additional, 335 total of 828 (40.46%)
+- [AVX512DQ](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512dq): 77 additional, 111 total of 399 (27.82%)
+- [AVX512_VBMI](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#avx512_vbmi): 9 additional, 30 total of 30 💯%!
+- [KNCNI](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#kncni): 113 additional, 114 total of 595 (19.16%)
+- [VPCLMULQDQ](https://github.com/simd-everywhere/implementation-status/blob/main/x86.md#vpclmulqdq): 1 additional, 2 total of 2 💯%!
+
+### [Neon](https://github.com/simd-everywhere/implementation-status/blob/main/neon.md)
+SIMDe currently implements 56.46% of the ARM NEON functions (3766 out of 6670). If you don't count 16-bit floats and poly types, it's 75.95% (3766 / 4969).
+
+#### Newly added families
+- addhn
+- bcax
+- cage
+- cmla
+- cmla_rot90
+- cmla_rot180
+- cmla_rot270
+- cvtn
+- fma
+- fma_lane
+- fma_n
+- ld2
+- ld4_lane
+- mla_lane
+- mlal_high_n
+- mlal_lane
+- mls_n
+- mlsl_high_n
+- mlsl_lane
+- mull_lane
+- qdmulh_lane
+- qdmulh_n
+- qrdmulh_lane
+- qrshrn_n
+- qrshrun_n
+- qshlu_n
+- qshrn_n
+- qshrun_n
+- recpe
+- recps
+- rshrn_n
+- rsqrte
+- rsqrts
+- shll_n
+- shrn_n
+- sqadd
+- sri_n
+- st2
+- st2_lane
+- st3_lane
+- st4_lane
+- subhn
+- subl_high
+- xar
+
+### [MSA](https://github.com/simd-everywhere/implementation-status/blob/main/msa.md)
+Overall, SIMDe implementents 40 of 533 (7.50%) functions from MSA.
+
+## What is coming next
+
+Work on SIMDe is proceeding rapidly, but there are a lot of functions
+to implement… x86 alone has about 8,000 SIMD functions, and we’ve
+implemented about 3,000 of them.  We will keep adding more functions
+and improving the implementations we already have.
+
+If you're interested in using SIMDe but need some specific functions
+to be implemented first, please [file an
+issue](https://github.com/simd-everywhere/simde/issues/new) and we may
+be able to prioritize those functions.
+
+## Getting Involved
+
+If you're interested in helping out please get in touch.  We have [a
+chat room on Matrix/Element](https://gitter.im/simd-everywhere/community)
+which is fairly active if you have questions, or of course you can
+just dive right in on [the issue
+tracker](https://github.com/simd-everywhere/simde/issues).
