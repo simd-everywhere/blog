@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-The SIMDe header-only library provides fast, portable implementations of
+The [SIMDe header-only library](https://github.com/simd-everywhere/simde) provides fast, portable implementations of
 [SIMD intrinsics](https://en.wikipedia.org/wiki/SIMD) on hardware which
 doesn't natively support them, such as calling [SSE](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions)
 functions on ARM.  There is no performance penalty if the hardware
